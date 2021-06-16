@@ -1,0 +1,55 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Login" parent="Theme.ChatClone">
+        <item name="android:background">@drawable/ic_launcher_background</item>
+    </style>
+
+    <style name="Theme.ChatClone" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/teal_500</item>
+        <item name="colorPrimaryVariant">@color/teal_800</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/dark_green</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/purple_500</item>
+        <item name="colorSecondaryVariant">@color/purple_700</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- background -->
+        <item name="android:colorBackground">@color/dark_green</item>
+
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <!-- Customize your theme here. -->
+        <item name="actionBarStyle">@style/CustomActionBar</item>
+        <item name="floatingActionButtonStyle">@style/CustomFloatButton</item>
+        <item name="tabStyle">@style/CustomTabBar</item>
+        <item name="itemTextColor">@color/teal_800</item>
+
+    </style>
+    <style name="CustomToolBar" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:backgroundTint">@color/teal_800</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
+    <style name="CustomTabBar" parent="@style/Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">?attr/colorPrimaryVariant</item>
+        <item name="tabIndicatorGravity">stretch</item>
+        <item name="tabIndicatorAnimationMode">elastic</item>
+        <item name="tabPadding">0dp</item>
+        <item name="tabRippleColor">@null</item>
+        <item name="tabSelectedTextColor">?attr/colorOnPrimary</item>
+    </style>
+    <style name="CustomFloatButton" parent="@style/Widget.Design.FloatingActionButton">
+        <item name="backgroundTint">@color/teal_700</item>
+        <item name="rippleColor">@color/teal_800</item>
+        <item name="tint">@color/white</item>
+        <item name="tintMode">src_atop</item>
+    </style>
+    <style name="CustomActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="background">?attr/colorPrimary</item>
+        <item name="elevation">0dp</item>
+        <item name="itemTextColor">@color/teal_800</item>
+
+    </style>
+</resources>

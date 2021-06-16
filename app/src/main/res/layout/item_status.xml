@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/chat_ripple"
+    android:clickable="true"
+    android:paddingHorizontal="@dimen/default_padding"
+    android:paddingVertical="8dp"
+    android:focusable="true">
+
+    <com.activator.chatclone.customviews.SegmentedCircularProgressBar
+        app:civ_stroke_gap="@dimen/status_stroke_gap"
+        app:civ_stroke_width="@dimen/status_stroke_width"
+        android:src="@drawable/gojo_avatar"
+        android:layout_width="@dimen/status_avatar_imageWidth"
+        android:layout_height="@dimen/status_avatar_imageWidth"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/item_status_image"
+        android:tag="avatar_image"
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:textColor="@color/white"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:paddingHorizontal="8dp"
+        android:text="Name"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:id="@+id/item_status_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/item_status_image"
+        app:layout_constraintBottom_toTopOf="@id/item_status_date" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:textColor="@color/white"
+        android:paddingHorizontal="8dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+        android:text="Date"
+        android:id="@+id/item_status_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_status_name"
+        app:layout_constraintStart_toEndOf="@id/item_status_image"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

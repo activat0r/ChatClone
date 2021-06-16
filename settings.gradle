@@ -1,0 +1,4 @@
+include ':segmentedcircularprogressview'
+include ':chatCloneLib'
+include ':app'
+rootProject.name = "ChatClone"

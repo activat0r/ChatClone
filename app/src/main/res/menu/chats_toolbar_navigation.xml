@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/chats_tn_newGroup" android:title="New Group"/>
+    <item android:id="@+id/chats_tn_newBroadcast" android:title="New Broadcast" />
+    <item android:id="@+id/chats_tn_CloneWeb" android:title="CloneApp Web" />
+    <item android:id="@+id/chats_tn_starredMessages" android:title="Starred Messages" />
+    <item android:id="@+id/chats_tn_payments" android:title="Payments" />
+    <item android:id="@+id/settings" android:title="Settings" />
+
+
+
+</menu>
