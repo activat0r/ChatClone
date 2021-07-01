@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.activator.chatclone.main.MainActivity
+import com.google.android.material.button.MaterialButton
 import java.util.concurrent.Executor
 import kotlin.math.log
 
@@ -16,10 +17,14 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
-
+    private  lateinit var unlockButton : MaterialButton
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        unlockButton = findViewById(R.id.unlockButton)
+
+
         executor = ContextCompat.getMainExecutor(this)
         biometricPrompt = BiometricPrompt(this, executor,
                 object : BiometricPrompt.AuthenticationCallback() {
@@ -67,11 +72,12 @@ class LoginActivity : AppCompatActivity() {
 
         }
 
+        unlockButton.setOnClickListener {  biometricPrompt.authenticate(promptInfo) }
+
     }
 
     override fun onResume() {
         super.onResume()
-        biometricPrompt.authenticate(promptInfo)
 
     }
 }
