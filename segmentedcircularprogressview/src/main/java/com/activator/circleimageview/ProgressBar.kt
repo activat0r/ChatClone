@@ -1,4 +1,4 @@
-package com.activator.chatclone.customviews
+package com.activator.circleimageview
 
 import android.content.Context
 import android.graphics.Canvas
@@ -7,12 +7,11 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.Log
-import de.hdodenhof.circleimageview.CircleImageView
 
 
 class ProgressBar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : CircleImageView(context, attrs, defStyleAttr) {
+) : CircularImageView(context, attrs, defStyleAttr) {
 
     init {
         setupPaint()

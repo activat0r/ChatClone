@@ -49,7 +49,7 @@ class CallsAdapter(private var listItems: MutableList<CallsModel>): RecyclerView
         else
             holder.call_goingType.setColorFilter(Color.GREEN)
 
-        val sdf = SimpleDateFormat("dd/MM/YY, hh:mm a")
+        val sdf = SimpleDateFormat("dd/MM/yy, hh:mm a")
         holder.call_date.text = sdf.format(callItem.date).toString()
 
 

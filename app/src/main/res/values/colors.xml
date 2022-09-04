@@ -10,4 +10,7 @@
     <color name="teal_500">#009688</color>
     <color name="teal_800">#00695C</color>
     <color name="dark_green">#012924</color>
+    <color name="chat_bubble_self">#FFF59D</color>
+    <color name="chat_bubble_opposite">#CE93D8</color>
+
 </resources>

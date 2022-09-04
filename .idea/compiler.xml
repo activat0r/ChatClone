@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.7">
-      <module name="ChatClone.app" target="1.8" />
-      <module name="ChatClone.segmentedcircularprogressview" target="1.8" />
+      <module name="ChatClone.app" target="11" />
+      <module name="ChatClone.segmentedcircularprogressview" target="11" />
       <module name="InstagramClone.app" target="1.8" />
     </bytecodeTargetLevel>
   </component>

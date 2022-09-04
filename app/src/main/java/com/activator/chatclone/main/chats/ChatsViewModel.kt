@@ -7,11 +7,12 @@ import androidx.lifecycle.asLiveData
 import com.activator.chatclone.main.entities.ChatScreen
 import com.activator.chatclone.repository.MainRepository
 
-class ChatsViewModel(private val repo:MainRepository): ViewModel() {
+class ChatsViewModel(private val repo: MainRepository) : ViewModel() {
     val contactList: LiveData<List<ChatScreen>> = repo.contactList.asLiveData()
 
 
-    class ChatsViewModelFactory(private val repository: MainRepository) : ViewModelProvider.Factory {
+    class ChatsViewModelFactory(private val repository: MainRepository) :
+        ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(ChatsViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")

@@ -1,7 +1,7 @@
 package com.activator.chatclone.main.chats
 
-import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -17,6 +17,7 @@ import com.activator.chatclone.customviews.CustomItemDecorator
 import com.activator.chatclone.R
 import com.activator.chatclone.databinding.FragmentChatBinding
 import com.activator.chatclone.main.FABClickInterface
+import com.activator.chatclone.main.chats.main.ChatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
@@ -30,11 +31,11 @@ private const val ARG_PARAM2 = "param2"
  * Use the [ChatFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ChatFragment() : Fragment(),FABClickInterface {
+class ChatFragment() : Fragment(),FABClickInterface, ChatsAdapter.ChatItemClick {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
+    private lateinit var list: MutableList<ChatsModel>
     private val chatViewModel: ChatsViewModel by viewModels {
         ChatsViewModel.ChatsViewModelFactory((requireActivity().application as CatCloneApp).chatRepository)
     }
@@ -84,11 +85,11 @@ class ChatFragment() : Fragment(),FABClickInterface {
         // Inflate the layout for this fragment
 
 
-        var list = generateSampleList()
+         list = generateSampleList()
         val binding = FragmentChatBinding.inflate(layoutInflater)
         val recyclerView = binding.chatsRecyclerView
         context?.let { CustomItemDecorator(it,R.layout.item_chats) }?.let { recyclerView.addItemDecoration(it) }
-        val adapter = ChatsAdapter(list, requireActivity().baseContext)
+        val adapter = ChatsAdapter(list, this, requireActivity().baseContext)
         val layoutManager = LinearLayoutManager(requireActivity().baseContext)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
 
@@ -115,5 +116,15 @@ class ChatFragment() : Fragment(),FABClickInterface {
         @JvmStatic
         fun newInstance() =
             ChatFragment()
+    }
+
+    override fun onItemClick(position: Int) {
+        val item = list[position]
+        Toast.makeText(requireContext(),"Clicked on ${item.chat_title}",Toast.LENGTH_SHORT).show()
+        val chatIntent = Intent(requireContext(), ChatActivity::class.java).also {
+            it.putExtra("name",item.chat_title)
+
+        }
+        startActivity(chatIntent)
     }
 }

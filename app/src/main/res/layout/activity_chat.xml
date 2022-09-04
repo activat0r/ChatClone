@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".main.chats.main.ChatActivity"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/chat_activity_actionBar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize">
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize">
+            <com.google.android.material.appbar.MaterialToolbar
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize">
+                <TextView
+                    android:id="@+id/chat_activity_actionBar_title"
+                    android:layout_margin="4dp"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chat Title"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6">
+                </TextView>
+            </com.google.android.material.appbar.MaterialToolbar>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/activity_chats_recyclerView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+</androidx.recyclerview.widget.RecyclerView>
+    <EditText
+        app:layout_anchor="@id/activity_chats_recyclerView"
+        app:layout_anchorGravity="bottom"
+        android:id="@+id/chat_activity_editText"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/teal_200"
+        android:maxLines="3"
+        android:drawablePadding="8dp"
+        android:drawableTint="@color/teal_200"
+        android:drawableEnd="@drawable/ic_round_send_24"
+        ></EditText>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

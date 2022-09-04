@@ -11,7 +11,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:focusable="true">
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <com.activator.circleimageview.CircularImageView
         android:tag="avatar_image"
         android:src="@drawable/gojo_avatar"
         android:id="@+id/item_chat_image"

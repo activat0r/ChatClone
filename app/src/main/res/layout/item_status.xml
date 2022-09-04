@@ -9,7 +9,7 @@
     android:paddingVertical="8dp"
     android:focusable="true">
 
-    <com.activator.chatclone.customviews.SegmentedCircularProgressBar
+    <com.activator.circleimageview.SegmentedCircularProgressBar
         app:civ_stroke_gap="@dimen/status_stroke_gap"
         app:civ_stroke_width="@dimen/status_stroke_width"
         android:src="@drawable/gojo_avatar"

@@ -9,7 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatClone">
-        <activity android:name=".LoginActivity" android:theme="@style/Login">
+        <activity android:name=".main.chats.main.ChatActivity"></activity>
+        <activity
+            android:exported="true"
+            android:name=".LoginActivity"
+            android:theme="@style/Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -17,9 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".contacts.ContactsActivity" />
-        <activity android:name=".main.MainActivity">
-
-        </activity>
+        <activity android:name=".main.MainActivity"></activity>
     </application>
 
 </manifest>

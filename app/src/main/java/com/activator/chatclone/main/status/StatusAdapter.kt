@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.activator.chatclone.R
-import com.activator.chatclone.customviews.SegmentedCircularProgressBar
+import com.activator.circleimageview.SegmentedCircularProgressBar
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -65,7 +65,7 @@ class StatusAdapter(private val listItems: MutableList<StatusModel>, val context
         holder.statusImage.setReadcount(readCount)
         holder.statusImage.setUnreadCount(statusItem.statusList.size - readCount)
 
-        val sdf: DateFormat = SimpleDateFormat("dd/MM/YY")
+        val sdf: DateFormat = SimpleDateFormat("dd/MM/yy")
         val date = Date(getLatestDate(statusItem))
         val formattedDate = sdf.format(date)
         holder.statusDate.text = formattedDate.toString()

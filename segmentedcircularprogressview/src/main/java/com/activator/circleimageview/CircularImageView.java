@@ -1,18 +1,3 @@
-/*
- * Copyright 2014 - 2020 Henning Dodenhof
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.activator.circleimageview;
 
 import android.annotation.SuppressLint;
@@ -35,23 +20,18 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
-import android.widget.ImageView;
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatImageView;
 
-@SuppressWarnings("UnusedDeclaration")
-public class SegmentedCircularProgressBar extends AppCompatImageView {
+public class CircularImageView extends AppCompatImageView {
 
-    private static final ImageView.ScaleType SCALE_TYPE = ImageView.ScaleType.CENTER_CROP;
+    private static final ScaleType SCALE_TYPE = ScaleType.CENTER_CROP;
 
     private static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
     private static final int COLORDRAWABLE_DIMENSION = 2;
@@ -59,14 +39,7 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
     private static final int DEFAULT_BORDER_WIDTH = 0;
     private static final int DEFAULT_BORDER_COLOR = Color.BLACK;
     private static final int DEFAULT_CIRCLE_BACKGROUND_COLOR = Color.TRANSPARENT;
-    private static final int DEFAULT_IMAGE_ALPHA = 255;
     private static final boolean DEFAULT_BORDER_OVERLAY = false;
-    private static final int DEFAULT_UNREAD_COLOR = Color.GREEN;
-    private static final int DEFAULT_READ_COLOR = Color.DKGRAY;
-    private static final int DEFAULT_PROGRESS_BACKGROUND_COLOR = Color.TRANSPARENT;
-    private static final int DEFAULT_STROKE_WIDTH = 10;
-    private static final int DEFAULT_GAP = 10;
-    private static final int DEFAULT_ARC_RADII_GAP = 10;
 
     private final RectF mDrawableRect = new RectF();
     private final RectF mBorderRect = new RectF();
@@ -79,46 +52,33 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
     private int mBorderColor = DEFAULT_BORDER_COLOR;
     private int mBorderWidth = DEFAULT_BORDER_WIDTH;
     private int mCircleBackgroundColor = DEFAULT_CIRCLE_BACKGROUND_COLOR;
-    private int mImageAlpha = DEFAULT_IMAGE_ALPHA;
-    private int mReadColor = DEFAULT_READ_COLOR;
-    private int mUnreadColor = DEFAULT_UNREAD_COLOR;
-    private int mProgressBackgroundColor = DEFAULT_PROGRESS_BACKGROUND_COLOR;
-    private int mGap = DEFAULT_GAP;
-    private int mStrokeWidth = DEFAULT_STROKE_WIDTH;
-    private int arcRadiiGap = DEFAULT_ARC_RADII_GAP;
 
     private Bitmap mBitmap;
-    private Canvas mBitmapCanvas;
+    private BitmapShader mBitmapShader;
+    private int mBitmapWidth;
+    private int mBitmapHeight;
 
     private float mDrawableRadius;
     private float mBorderRadius;
 
     private ColorFilter mColorFilter;
 
-    private boolean mInitialized;
-    private boolean mRebuildShader;
-    private boolean mDrawableDirty;
-
-    private boolean mDrawProgressBar = true;
-
+    private boolean mReady;
+    private boolean mSetupPending;
     private boolean mBorderOverlay;
     private boolean mDisableCircularTransformation;
 
-    private int mUnreadCount = 1;
-    private int mReadCount = 1;
-
-
-    public SegmentedCircularProgressBar(Context context) {
+    public CircularImageView(Context context) {
         super(context);
 
         init();
     }
 
-    public SegmentedCircularProgressBar(Context context, AttributeSet attrs) {
+    public CircularImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SegmentedCircularProgressBar(Context context, AttributeSet attrs, int defStyle) {
+    public CircularImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircularImageView, defStyle, 0);
@@ -127,43 +87,33 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
         mBorderColor = a.getColor(R.styleable.CircularImageView_civ_border_color, DEFAULT_BORDER_COLOR);
         mBorderOverlay = a.getBoolean(R.styleable.CircularImageView_civ_border_overlay, DEFAULT_BORDER_OVERLAY);
         mCircleBackgroundColor = a.getColor(R.styleable.CircularImageView_civ_circle_background_color, DEFAULT_CIRCLE_BACKGROUND_COLOR);
-        mReadColor = a.getColor(R.styleable.CircularImageView_civ_read_progress_color,DEFAULT_READ_COLOR);
-        mUnreadColor = a.getColor(R.styleable.CircularImageView_civ_unread_progress_color,DEFAULT_UNREAD_COLOR);
-        mGap = a.getDimensionPixelSize(R.styleable.CircularImageView_civ_stroke_gap, DEFAULT_GAP);
-        mStrokeWidth = a.getDimensionPixelSize(R.styleable.CircularImageView_civ_stroke_width, DEFAULT_STROKE_WIDTH);
-        arcRadiiGap =  context.getResources().getDimensionPixelSize(R.dimen.status_stroke_gap);
+
         a.recycle();
 
         init();
     }
 
     private void init() {
-        mInitialized = true;
-
         super.setScaleType(SCALE_TYPE);
-
-        mBitmapPaint.setAntiAlias(true);
-        mBitmapPaint.setDither(true);
-        mBitmapPaint.setFilterBitmap(true);
-        mBitmapPaint.setAlpha(mImageAlpha);
-        mBitmapPaint.setColorFilter(mColorFilter);
-
-        mBorderPaint.setStyle(Paint.Style.STROKE);
-        mBorderPaint.setAntiAlias(true);
-        mBorderPaint.setColor(mBorderColor);
-        mBorderPaint.setStrokeWidth(mBorderWidth);
-
-        mCircleBackgroundPaint.setStyle(Paint.Style.FILL);
-        mCircleBackgroundPaint.setAntiAlias(true);
-        mCircleBackgroundPaint.setColor(mCircleBackgroundColor);
+        mReady = true;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setOutlineProvider(new OutlineProvider());
         }
+
+        if (mSetupPending) {
+            setup();
+            mSetupPending = false;
+        }
     }
 
     @Override
-    public void setScaleType(ImageView.ScaleType scaleType) {
+    public ScaleType getScaleType() {
+        return SCALE_TYPE;
+    }
+
+    @Override
+    public void setScaleType(ScaleType scaleType) {
         if (scaleType != SCALE_TYPE) {
             throw new IllegalArgumentException(String.format("ScaleType %s not supported.", scaleType));
         }
@@ -176,17 +126,6 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
         }
     }
 
-    private Paint setProgressPaint(){
-        Paint paint = new Paint();
-        paint.setStrokeCap(Paint.Cap.ROUND);
-        paint.setColor(mProgressBackgroundColor);
-        paint.setStrokeWidth(mStrokeWidth);
-        paint.setAntiAlias(true);
-        paint.setStyle(Paint.Style.STROKE);
-        return paint;
-    }
-
-    @SuppressLint("CanvasSize")
     @Override
     protected void onDraw(Canvas canvas) {
         if (mDisableCircularTransformation) {
@@ -194,105 +133,35 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
             return;
         }
 
-        if(mDrawProgressBar){
-
-            RectF rect = new RectF(mDrawableRect.left + mGap + mStrokeWidth ,mDrawableRect.top + mGap + mStrokeWidth,mDrawableRect.right + mGap + mStrokeWidth,mDrawableRect.bottom + mGap + mStrokeWidth );
-            Paint arcPaint = setProgressPaint();
-            if (mProgressBackgroundColor != Color.TRANSPARENT){
-                arcPaint.setColor(mProgressBackgroundColor);
-                canvas.drawArc(rect,-90f,360f,false,arcPaint);
-            }
-            float individualRadii = (float) 360/(mUnreadCount+mReadCount);
-            float startRadii = -90f;
-
-            float arcRadii = individualRadii - (arcRadiiGap*2);
-
-            Log.d("Segment"," individualRadii "+individualRadii);
-
-            for(int i = 0; i< mUnreadCount; i++){
-                startRadii = (i*individualRadii)+ (arcRadiiGap) -90f;
-
-                Log.d("Segment"," start for "+i+ "  "+startRadii);
-                Log.d("Segment"," end for "+i+ "  "+(startRadii+arcRadii));
-
-                arcPaint.setColor(mUnreadColor);
-
-                canvas.drawArc(rect,startRadii, arcRadii,false,arcPaint);
-            }
-
-            for(int i = mUnreadCount; i< mReadCount+mUnreadCount; i++){
-                startRadii = (i*individualRadii)+ (arcRadiiGap) -90f;
-                Log.d("Segment"," start for "+i+ "  "+startRadii);
-                Log.d("Segment"," end for "+i+ "  "+(startRadii+arcRadii));
-
-                arcPaint.setColor(mReadColor);
-
-                canvas.drawArc(rect,startRadii, arcRadii,false,arcPaint);
-            }
-
+        if (mBitmap == null) {
+            return;
         }
-
-
 
         if (mCircleBackgroundColor != Color.TRANSPARENT) {
             canvas.drawCircle(mDrawableRect.centerX(), mDrawableRect.centerY(), mDrawableRadius, mCircleBackgroundPaint);
         }
-
-
-
-        if (mBitmap != null) {
-            if (mDrawableDirty && mBitmapCanvas != null) {
-                mDrawableDirty = false;
-                Drawable drawable = getDrawable();
-                drawable.setBounds((int) (mDrawableRect.left), (int) mDrawableRect.top, (int) (mDrawableRect.right), (int) (mDrawableRect.bottom));
-                drawable.draw(mBitmapCanvas);
-            }
-
-            if (mRebuildShader) {
-                mRebuildShader = false;
-
-                BitmapShader bitmapShader = new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-                bitmapShader.setLocalMatrix(mShaderMatrix);
-
-                mBitmapPaint.setShader(bitmapShader);
-            }
-
-            canvas.drawCircle(mDrawableRect.centerX()+mGap +mStrokeWidth, mDrawableRect.centerY()+mGap + mStrokeWidth, mDrawableRadius - (mGap ), mBitmapPaint);
-
-        }
-
+        canvas.drawCircle(mDrawableRect.centerX(), mDrawableRect.centerY(), mDrawableRadius, mBitmapPaint);
         if (mBorderWidth > 0) {
             canvas.drawCircle(mBorderRect.centerX(), mBorderRect.centerY(), mBorderRadius, mBorderPaint);
         }
-
-
-    }
-
-    @Override
-    public void invalidateDrawable(@NonNull Drawable dr) {
-        mDrawableDirty = true;
-        invalidate();
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        updateDimensions();
-        invalidate();
+        setup();
     }
 
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
         super.setPadding(left, top, right, bottom);
-        updateDimensions();
-        invalidate();
+        setup();
     }
 
     @Override
     public void setPaddingRelative(int start, int top, int end, int bottom) {
         super.setPaddingRelative(start, top, end, bottom);
-        updateDimensions();
-        invalidate();
+        setup();
     }
 
     public int getBorderColor() {
@@ -305,7 +174,7 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
         }
 
         mBorderColor = borderColor;
-        mBorderPaint.setColor(borderColor);
+        mBorderPaint.setColor(mBorderColor);
         invalidate();
     }
 
@@ -323,10 +192,6 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
         invalidate();
     }
 
-    /**
-     * @deprecated Use {@link #setCircleBackgroundColor(int)} instead
-     */
-    @Deprecated
     public void setCircleBackgroundColorResource(@ColorRes int circleBackgroundRes) {
         setCircleBackgroundColor(getContext().getResources().getColor(circleBackgroundRes));
     }
@@ -335,17 +200,13 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
         return mBorderWidth;
     }
 
-
-
     public void setBorderWidth(int borderWidth) {
         if (borderWidth == mBorderWidth) {
             return;
         }
 
         mBorderWidth = borderWidth;
-        mBorderPaint.setStrokeWidth(borderWidth);
-        updateDimensions();
-        invalidate();
+        setup();
     }
 
     public boolean isBorderOverlay() {
@@ -358,92 +219,44 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
         }
 
         mBorderOverlay = borderOverlay;
-        updateDimensions();
-        invalidate();
+        setup();
     }
-
-    public void setProgressBarStrokeWidth(int mStrokeWidth){
-        this.mStrokeWidth = mStrokeWidth;
-    }
-    public void setReadcount(int readcount){
-        this.mReadCount = readcount;
-    }
-    public void setUnreadCount(int unReadCount){
-        this.mUnreadCount = unReadCount;
-    }
-
 
     public boolean isDisableCircularTransformation() {
         return mDisableCircularTransformation;
     }
 
     public void setDisableCircularTransformation(boolean disableCircularTransformation) {
-        if (disableCircularTransformation == mDisableCircularTransformation) {
+        if (mDisableCircularTransformation == disableCircularTransformation) {
             return;
         }
 
         mDisableCircularTransformation = disableCircularTransformation;
-
-        if (disableCircularTransformation) {
-            mBitmap = null;
-            mBitmapCanvas = null;
-            mBitmapPaint.setShader(null);
-        } else {
-            initializeBitmap();
-        }
-
-        invalidate();
+        initializeBitmap();
     }
 
     @Override
     public void setImageBitmap(Bitmap bm) {
         super.setImageBitmap(bm);
         initializeBitmap();
-        invalidate();
     }
 
     @Override
     public void setImageDrawable(Drawable drawable) {
         super.setImageDrawable(drawable);
         initializeBitmap();
-        invalidate();
     }
 
     @Override
     public void setImageResource(@DrawableRes int resId) {
         super.setImageResource(resId);
         initializeBitmap();
-        invalidate();
     }
 
     @Override
     public void setImageURI(Uri uri) {
         super.setImageURI(uri);
         initializeBitmap();
-        invalidate();
-    }
-
-    @Override
-    public void setImageAlpha(int alpha) {
-        alpha &= 0xFF;
-
-        if (alpha == mImageAlpha) {
-            return;
-        }
-
-        mImageAlpha = alpha;
-
-        // This might be called during ImageView construction before
-        // member initialization has finished on API level >= 16.
-        if (mInitialized) {
-            mBitmapPaint.setAlpha(alpha);
-            invalidate();
-        }
-    }
-
-    @Override
-    public int getImageAlpha() {
-        return mImageAlpha;
     }
 
     @Override
@@ -453,18 +266,22 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
         }
 
         mColorFilter = cf;
-
-        // This might be called during ImageView construction before
-        // member initialization has finished on API level <= 19.
-        if (mInitialized) {
-            mBitmapPaint.setColorFilter(cf);
-            invalidate();
-        }
+        applyColorFilter();
+        invalidate();
     }
 
     @Override
     public ColorFilter getColorFilter() {
         return mColorFilter;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void applyColorFilter() {
+        // This might be called from setColorFilter during ImageView construction
+        // before member initialization has finished on API level <= 19.
+        if (mBitmapPaint != null) {
+            mBitmapPaint.setColorFilter(mColorFilter);
+        }
     }
 
     private Bitmap getBitmapFromDrawable(Drawable drawable) {
@@ -496,81 +313,93 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
     }
 
     private void initializeBitmap() {
-        mBitmap = getBitmapFromDrawable(getDrawable());
-
-        if (mBitmap != null && mBitmap.isMutable()) {
-            mBitmapCanvas = new Canvas(mBitmap);
+        if (mDisableCircularTransformation) {
+            mBitmap = null;
         } else {
-            mBitmapCanvas = null;
+            mBitmap = getBitmapFromDrawable(getDrawable());
         }
+        setup();
+    }
 
-        if (!mInitialized) {
+    private void setup() {
+        if (!mReady) {
+            mSetupPending = true;
             return;
         }
 
-        if (mBitmap != null) {
-            updateShaderMatrix();
-        } else {
-            mBitmapPaint.setShader(null);
+        if (getWidth() == 0 && getHeight() == 0) {
+            return;
         }
-    }
 
-    private void updateDimensions() {
+        if (mBitmap == null) {
+            invalidate();
+            return;
+        }
+
+        mBitmapShader = new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+
+        mBitmapPaint.setAntiAlias(true);
+        mBitmapPaint.setDither(true);
+        mBitmapPaint.setFilterBitmap(true);
+        mBitmapPaint.setShader(mBitmapShader);
+
+        mBorderPaint.setStyle(Paint.Style.STROKE);
+        mBorderPaint.setAntiAlias(true);
+        mBorderPaint.setColor(mBorderColor);
+        mBorderPaint.setStrokeWidth(mBorderWidth);
+
+        mCircleBackgroundPaint.setStyle(Paint.Style.FILL);
+        mCircleBackgroundPaint.setAntiAlias(true);
+        mCircleBackgroundPaint.setColor(mCircleBackgroundColor);
+
+        mBitmapHeight = mBitmap.getHeight();
+        mBitmapWidth = mBitmap.getWidth();
+
         mBorderRect.set(calculateBounds());
         mBorderRadius = Math.min((mBorderRect.height() - mBorderWidth) / 2.0f, (mBorderRect.width() - mBorderWidth) / 2.0f);
 
         mDrawableRect.set(mBorderRect);
         if (!mBorderOverlay && mBorderWidth > 0) {
-            mDrawableRect.inset(mBorderWidth - 1.0f - mGap -mStrokeWidth, mBorderWidth - 1.0f- mGap -mStrokeWidth);
+            mDrawableRect.inset(mBorderWidth - 1.0f, mBorderWidth - 1.0f);
         }
         mDrawableRadius = Math.min(mDrawableRect.height() / 2.0f, mDrawableRect.width() / 2.0f);
 
+        applyColorFilter();
         updateShaderMatrix();
+        invalidate();
     }
 
     private RectF calculateBounds() {
-        int availableWidth  = (int) (getWidth() - getPaddingLeft() - getPaddingRight()- mGap -mStrokeWidth - mGap -mStrokeWidth);
-        int availableHeight =(int) (getHeight() - getPaddingTop() - getPaddingBottom()- mGap -mStrokeWidth - mGap -mStrokeWidth);
+        int availableWidth  = getWidth() - getPaddingLeft() - getPaddingRight();
+        int availableHeight = getHeight() - getPaddingTop() - getPaddingBottom();
 
         int sideLength = Math.min(availableWidth, availableHeight);
 
         float left = getPaddingLeft() + (availableWidth - sideLength) / 2f;
         float top = getPaddingTop() + (availableHeight - sideLength) / 2f;
 
-        Log.d("Segmented","avail width  "+ availableWidth+"    height  "+availableHeight);
-        Log.d("Segmented","sideLength   "+sideLength);
-        Log.d("Segmented","left "+left+" ----  top "+top+" ----- right "+(left+sideLength)+"----- bottom"+(top+sideLength));
-
-
         return new RectF(left, top, left + sideLength, top + sideLength);
     }
 
     private void updateShaderMatrix() {
-        if (mBitmap == null) {
-            return;
-        }
-
         float scale;
         float dx = 0;
         float dy = 0;
 
         mShaderMatrix.set(null);
 
-        int bitmapHeight = mBitmap.getHeight();
-        int bitmapWidth = mBitmap.getWidth();
-
-        if (bitmapWidth * mDrawableRect.height() > mDrawableRect.width() * bitmapHeight) {
-            scale = mDrawableRect.height() / (float) bitmapHeight;
-            dx = (mDrawableRect.width() - bitmapWidth * scale) * 0.5f;
+        if (mBitmapWidth * mDrawableRect.height() > mDrawableRect.width() * mBitmapHeight) {
+            scale = mDrawableRect.height() / (float) mBitmapHeight;
+            dx = (mDrawableRect.width() - mBitmapWidth * scale) * 0.5f;
         } else {
-            scale = mDrawableRect.width() / (float) bitmapWidth;
-            dy = (mDrawableRect.height() - bitmapHeight * scale) * 0.5f;
+            scale = mDrawableRect.width() / (float) mBitmapWidth;
+            dy = (mDrawableRect.height() - mBitmapHeight * scale) * 0.5f;
         }
 
         mShaderMatrix.setScale(scale, scale);
-        mShaderMatrix.postTranslate((int) (dx + 0.5f) + mDrawableRect.left + mStrokeWidth+mGap, (int) (dy + 0.5f) + mDrawableRect.top+ mStrokeWidth+mGap);
+        mShaderMatrix.postTranslate((int) (dx + 0.5f) + mDrawableRect.left, (int) (dy + 0.5f) + mDrawableRect.top);
 
-        mRebuildShader = true;
+        mBitmapShader.setLocalMatrix(mShaderMatrix);
     }
 
     @SuppressLint("ClickableViewAccessibility")
