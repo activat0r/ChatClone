@@ -18,7 +18,6 @@ class ChatActivity : AppCompatActivity() {
         val recyclerView:RecyclerView = binding.activityChatsRecyclerView
         val chatTitleTextView :TextView = binding.chatActivityActionBarTitle
         chatTitleTextView.text = intent.getStringExtra("name").toString()
-        Log.d("ChatActivity","clicked on ${intent.getStringExtra("name").toString()}")
         val editText : EditText = binding.chatActivityEditText
 
         

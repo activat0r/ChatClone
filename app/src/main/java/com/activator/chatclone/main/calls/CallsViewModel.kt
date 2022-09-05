@@ -29,7 +29,6 @@ init {
 
     private fun generateSampleList() {
         for (i in 0..10){
-            Log.d("Main"," added $i th item ")
 
             viewModelScope.launch {
 

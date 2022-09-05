@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.activator.chatclone.R
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ChatsAdapter(private val listItems: MutableList<ChatsModel>, private val onItemClick: ChatItemClick,val context: Context): RecyclerView.Adapter<ChatsAdapter.ChatViewHolder>(){
 
@@ -16,6 +18,7 @@ class ChatsAdapter(private val listItems: MutableList<ChatsModel>, private val o
         val chatTitle:TextView = view.findViewById<TextView>(R.id.item_chat_name)
         val chatImage:ImageView = view.findViewById<ImageView>(R.id.item_chat_image)
         val chatMessage:TextView = view.findViewById<TextView>(R.id.item_chat_text)
+        val chatTime: TextView = view.findViewById(R.id.item_chat_date)
         private val onItemClickListener = itemClickListener
         override fun onClick(v: View?) {
             onItemClickListener.onItemClick(adapterPosition)
@@ -38,7 +41,30 @@ class ChatsAdapter(private val listItems: MutableList<ChatsModel>, private val o
         holder.chatMessage.text = chatItem.chat_text
         holder.chatTitle.text = chatItem.chat_title
         holder.chatImage.setImageResource(R.drawable.gojo_avatar)
-        Log.d("Adapter","text ${chatItem.chat_title}")
+        val sdf = SimpleDateFormat("dd/MM/yy")
+        val sdf2 = SimpleDateFormat("hh:mm")
+
+        val today = GregorianCalendar()
+        today.time = Date(System.currentTimeMillis())
+        today.set(Calendar.MINUTE,0)
+        today.set(Calendar.HOUR,0)
+        today.set(Calendar.SECOND,0)
+        today.set(Calendar.MILLISECOND,0)
+
+        val messageTime = GregorianCalendar()
+        messageTime.time = Date(chatItem.date)
+        messageTime.set(Calendar.MINUTE,0)
+        messageTime.set(Calendar.HOUR,0)
+        messageTime.set(Calendar.SECOND,0)
+        messageTime.set(Calendar.MILLISECOND,0)
+
+        var date = sdf.format(Date(chatItem.date))
+
+        if(today.time < messageTime.time) {
+            date = sdf2.format(Date(chatItem.date))
+        }
+
+        holder.chatTime.text = date
     }
 
 

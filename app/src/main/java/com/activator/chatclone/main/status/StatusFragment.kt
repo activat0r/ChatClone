@@ -42,29 +42,21 @@ class StatusFragment : Fragment(),FABClickInterface {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        Log.d("Status", " onAttach")
-
     }
 
     override fun onDetach() {
         super.onDetach()
-        Log.d("Status", " onDetach")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("Status", " onDestroy")
-
     }
     override fun onFABClick(context: Context) {
         Toast.makeText(context,"Status Fragment",Toast.LENGTH_SHORT).show()
-
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d("Status", " onResume")
-
         val toolbar = requireActivity().findViewById<Toolbar>(R.id.mainToolbar)
         toolbar.inflateMenu(R.menu.status_toolbar_navigation)
         val fab = requireActivity().findViewById<FloatingActionButton>(R.id.floatButton)
@@ -73,8 +65,6 @@ class StatusFragment : Fragment(),FABClickInterface {
     }
 
     override fun onPause() {
-        Log.d("Status", " onPause")
-
         val toolbar = requireActivity().findViewById<Toolbar>(R.id.mainToolbar)
         toolbar.menu.clear()
         val fab = requireActivity().findViewById<FloatingActionButton>(R.id.floatButton)

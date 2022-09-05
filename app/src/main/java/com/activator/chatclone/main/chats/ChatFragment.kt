@@ -11,14 +11,24 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.activator.chatclone.CatCloneApp
+import com.activator.chatclone.ChatCloneAppController
+import com.activator.chatclone.ChatCloneDatabase
+import com.activator.chatclone.ChatCloneDatabaseImpl
 import com.activator.chatclone.customviews.CustomItemDecorator
 import com.activator.chatclone.R
 import com.activator.chatclone.databinding.FragmentChatBinding
 import com.activator.chatclone.main.FABClickInterface
 import com.activator.chatclone.main.chats.main.ChatActivity
+import com.activator.chatclone.main.entities.ChatScreen
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -37,23 +47,22 @@ class ChatFragment() : Fragment(),FABClickInterface, ChatsAdapter.ChatItemClick 
     private var param2: String? = null
     private lateinit var list: MutableList<ChatsModel>
     private val chatViewModel: ChatsViewModel by viewModels {
-        ChatsViewModel.ChatsViewModelFactory((requireActivity().application as CatCloneApp).chatRepository)
+        ChatsViewModel.ChatsViewModelFactory((requireActivity().application as ChatCloneAppController).chatRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        Log.d("Chat", " onAttach")
 
     }
-
 
     override fun onDetach() {
         super.onDetach()
-        Log.d("Chat", " onDetach")
     }
+
     override fun onFABClick(context: Context) {
             Toast.makeText(context,"Chats Fragment",Toast.LENGTH_SHORT).show()
     }
@@ -96,17 +105,28 @@ class ChatFragment() : Fragment(),FABClickInterface, ChatsAdapter.ChatItemClick 
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 
-        Log.d("Main", "items in recycler ${recyclerView.adapter?.itemCount.toString()}")
-
         return binding.root
     }
 
     private fun generateSampleList(): MutableList<ChatsModel> {
         val list = mutableListOf<ChatsModel>()
-        for (i in 0..30){
-            Log.d("Main"," added $i th item ")
-            list.add(ChatsModel("url","${resources.getString(R.string.short_text)}_$i","${resources.getString(R.string.short_text)}_$i",true,false,
-                Calendar.getInstance().timeInMillis))
+        var chatList: List<ChatScreen> = listOf()
+
+        if(activity!=null) {
+            val dbInstance = ChatCloneDatabaseImpl().getDatabase(
+                requireActivity().applicationContext,
+                CoroutineScope(Dispatchers.IO)
+            )
+
+            runBlocking(Dispatchers.IO) {
+                chatList = dbInstance.chatDao().getMessagedContacts()
+            }
+        }
+
+        for (i in chatList.indices){
+            list.add(ChatsModel("url",
+                chatList[i].roomName,chatList[i].stringMessage,true,false,
+                chatList[i].time))
         }
         return list
     }

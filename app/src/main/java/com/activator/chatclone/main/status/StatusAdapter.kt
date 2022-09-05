@@ -69,8 +69,6 @@ class StatusAdapter(private val listItems: MutableList<StatusModel>, val context
         val date = Date(getLatestDate(statusItem))
         val formattedDate = sdf.format(date)
         holder.statusDate.text = formattedDate.toString()
-
-        Log.d("StatusAdapter", "text ${statusItem.name}")
     }
 
     override fun getItemCount(): Int {

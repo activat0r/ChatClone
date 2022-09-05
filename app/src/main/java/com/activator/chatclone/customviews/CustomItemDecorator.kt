@@ -21,7 +21,6 @@ class CustomItemDecorator(val context:Context, val view: Int):RecyclerView.ItemD
         else {
             mOffsetLeft = context.resources.getDimension(R.dimen.avatar_imageWidth)+context.resources.getDimension(R.dimen.default_padding)
         }
-    Log.d("Deco"," offset $mOffsetLeft")
     }
 
 

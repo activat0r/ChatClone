@@ -4,11 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/InstagramClone/app/src/main/res/drawable/circular_image.xml" value="0.2805" />
+        <entry key="..\:/InstagramClone/app/src/main/res/drawable/item_chat_main.xml" value="0.1" />
         <entry key="..\:/InstagramClone/app/src/main/res/layout/activity_chat.xml" value="0.1" />
         <entry key="..\:/InstagramClone/app/src/main/res/layout/fragment_chat.xml" value="0.32760416666666664" />
         <entry key="..\:/InstagramClone/app/src/main/res/layout/fragment_status.xml" value="0.18980169971671387" />
         <entry key="..\:/InstagramClone/app/src/main/res/layout/item_calls.xml" value="0.14791666666666667" />
-        <entry key="..\:/InstagramClone/app/src/main/res/layout/item_chats.xml" value="0.24738675958188153" />
+        <entry key="..\:/InstagramClone/app/src/main/res/layout/item_chats.xml" value="0.67" />
         <entry key="..\:/InstagramClone/app/src/main/res/layout/item_status.xml" value="0.32760416666666664" />
       </map>
     </option>

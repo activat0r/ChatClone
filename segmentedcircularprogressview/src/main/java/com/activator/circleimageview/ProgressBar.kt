@@ -47,14 +47,12 @@ class ProgressBar @JvmOverloads constructor(
 
         for (i in 0 until unReadcount){
             startRadii = (i*individualRadii) + (arcRadiiGap) - 90f
-            Log.d("Canvas", "$startRadii   ---   $arcRadii")
             drawPaint.color = Color.LTGRAY
             canvas?.drawArc(rect, startRadii, arcRadii, false, drawPaint)
         }
 
         for (i in unReadcount until count){
             startRadii = (i*individualRadii) + (arcRadiiGap) - 90f
-            Log.d("Canvas", "$startRadii   ---   $arcRadii")
             drawPaint.color = Color.DKGRAY
             canvas?.drawArc(rect, startRadii, arcRadii, false, drawPaint)
         }

@@ -207,13 +207,8 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
 
             float arcRadii = individualRadii - (arcRadiiGap*2);
 
-            Log.d("Segment"," individualRadii "+individualRadii);
-
             for(int i = 0; i< mUnreadCount; i++){
                 startRadii = (i*individualRadii)+ (arcRadiiGap) -90f;
-
-                Log.d("Segment"," start for "+i+ "  "+startRadii);
-                Log.d("Segment"," end for "+i+ "  "+(startRadii+arcRadii));
 
                 arcPaint.setColor(mUnreadColor);
 
@@ -222,8 +217,6 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
 
             for(int i = mUnreadCount; i< mReadCount+mUnreadCount; i++){
                 startRadii = (i*individualRadii)+ (arcRadiiGap) -90f;
-                Log.d("Segment"," start for "+i+ "  "+startRadii);
-                Log.d("Segment"," end for "+i+ "  "+(startRadii+arcRadii));
 
                 arcPaint.setColor(mReadColor);
 
@@ -536,10 +529,6 @@ public class SegmentedCircularProgressBar extends AppCompatImageView {
 
         float left = getPaddingLeft() + (availableWidth - sideLength) / 2f;
         float top = getPaddingTop() + (availableHeight - sideLength) / 2f;
-
-        Log.d("Segmented","avail width  "+ availableWidth+"    height  "+availableHeight);
-        Log.d("Segmented","sideLength   "+sideLength);
-        Log.d("Segmented","left "+left+" ----  top "+top+" ----- right "+(left+sideLength)+"----- bottom"+(top+sideLength));
 
 
         return new RectF(left, top, left + sideLength, top + sideLength);

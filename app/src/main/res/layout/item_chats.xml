@@ -40,9 +40,23 @@
             android:text="@string/short_text"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/item_chat_date"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/item_chat_date"
+            android:layout_width="80sp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:textAlignment="viewEnd"
+            android:maxLines="1"
+            android:text="dd/mm/yy"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toEndOf="@id/item_chat_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/item_chat_name" />
 
     <com.google.android.material.textview.MaterialTextView
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"

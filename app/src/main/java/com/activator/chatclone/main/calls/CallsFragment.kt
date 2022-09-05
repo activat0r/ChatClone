@@ -41,17 +41,14 @@ class CallsFragment : Fragment(), FABClickInterface{
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        Log.d("Calls", " onAttach")
 
     }
 
     override fun onDetach() {
         super.onDetach()
-        Log.d("Calls", " onDetach")
     }
     override fun onResume() {
         super.onResume()
-        Log.d("Calls", " onResume")
 
         val toolbar = requireActivity().findViewById<Toolbar>(R.id.mainToolbar)
         toolbar.inflateMenu(R.menu.calls_toolbar_navigation)
@@ -60,7 +57,6 @@ class CallsFragment : Fragment(), FABClickInterface{
     }
 
     override fun onPause() {
-        Log.d("Calls", " onPause")
 
         val toolbar = requireActivity().findViewById<Toolbar>(R.id.mainToolbar)
         toolbar.menu.clear()
@@ -95,7 +91,6 @@ class CallsFragment : Fragment(), FABClickInterface{
             list.clear()
             list.addAll(it)
             adapter.notifyDataSetChanged()
-            Log.d("CallsFrag", "Data changed")
         }
         viewModel.getCallsList().observe(requireActivity(), observer)
         return root

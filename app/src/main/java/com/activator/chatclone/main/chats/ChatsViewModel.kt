@@ -8,8 +8,7 @@ import com.activator.chatclone.main.entities.ChatScreen
 import com.activator.chatclone.repository.MainRepository
 
 class ChatsViewModel(private val repo: MainRepository) : ViewModel() {
-    val contactList: LiveData<List<ChatScreen>> = repo.contactList.asLiveData()
-
+    val contactList: List<ChatScreen> = repo.contactList
 
     class ChatsViewModelFactory(private val repository: MainRepository) :
         ViewModelProvider.Factory {
