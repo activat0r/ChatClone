@@ -1,7 +1,6 @@
 package com.activator.chatclone.main.chats
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +14,9 @@ import java.util.*
 class ChatsAdapter(private val listItems: MutableList<ChatsModel>, private val onItemClick: ChatItemClick,val context: Context): RecyclerView.Adapter<ChatsAdapter.ChatViewHolder>(){
 
     class ChatViewHolder(view: View, itemClickListener:ChatItemClick):RecyclerView.ViewHolder(view),View.OnClickListener{
-        val chatTitle:TextView = view.findViewById<TextView>(R.id.item_chat_name)
-        val chatImage:ImageView = view.findViewById<ImageView>(R.id.item_chat_image)
-        val chatMessage:TextView = view.findViewById<TextView>(R.id.item_chat_text)
+        val chatTitle:TextView = view.findViewById<TextView>(R.id.item_contact_name)
+        val chatImage:ImageView = view.findViewById<ImageView>(R.id.item_contact_image)
+        val chatMessage:TextView = view.findViewById<TextView>(R.id.item_contact_status)
         val chatTime: TextView = view.findViewById(R.id.item_chat_date)
         private val onItemClickListener = itemClickListener
         override fun onClick(v: View?) {

@@ -1,7 +1,9 @@
 package com.activator.chatclone.main
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuInflater
 import android.view.View
 import android.widget.Toast
@@ -19,9 +21,19 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var context: Context
+    override fun onPause() {
+        Log.d("Debug","MainActivity onPause")
+        super.onPause()
+    }
 
+    override fun onDestroy() {
+        Log.d("Debug","MainActivity onDestroy")
+        super.onDestroy()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        context = this
         val binding = ActivityMainBinding.inflate(layoutInflater)
         val root = binding.root
         setContentView(root)
@@ -47,9 +59,9 @@ class MainActivity : AppCompatActivity() {
 
         fab.setOnClickListener(View.OnClickListener {
             when (adapter.getFragmentList()[viewPager.currentItem]){
-                is ChatFragment -> ChatFragment().onFABClick(this)
-                is CallsFragment -> CallsFragment().onFABClick(this)
-                is StatusFragment -> StatusFragment().onFABClick(this)
+                is ChatFragment -> ChatFragment().onFABClick(context)
+                is CallsFragment -> CallsFragment().onFABClick(context)
+                is StatusFragment -> StatusFragment().onFABClick(context)
             }
         })
 
